@@ -77,9 +77,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      ./node_modules/.bin/copyfiles -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
-      ./node_modules/.bin/cross-env NODE_ENV=production webpack
-      ./tools/nuget.exe restore .\HCA.sln
+      ./src/node_modules/.bin/copyfiles.cmd -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
+      ./src/node_modules/.bin/cross-env NODE_ENV=production webpack
+      ./src/tools/nuget.exe restore .\HCA.sln
 
 - task: MSBuild@1
   displayName: MSBuild

@@ -85,10 +85,10 @@ steps:
   displayName: MSBuild
   inputs:
     solution: './src/HCA.sln'
-    msbuildVersion: '16.0'
-    msbuildArchitecture: 'x64'
-    configuration: 'Configuration=Debug'
-    msbuildArguments: '-t:Rebuild'
+    msbuildVersion: '15.0'
+    msbuildArchitecture: 'x86'
+    configuration: 'Debug'
+    msbuildArguments: '/t:Rebuild'
 
 - task: PowerShell@2
   inputs:

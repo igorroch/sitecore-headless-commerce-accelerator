@@ -79,7 +79,7 @@ steps:
     script: |
       ./src/node_modules/.bin/copyfiles.cmd -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
       ./src/node_modules/.bin/cross-env NODE_ENV=production webpack
-      ./src/tools/nuget.exe restore .\HCA.sln
+      ./src/tools/nuget.exe restore ./src/HCA.sln
 
 - task: MSBuild@1
   displayName: MSBuild

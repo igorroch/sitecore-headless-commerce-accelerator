@@ -60,10 +60,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      # (Get-Content $(build_cake)) -replace "MSBuildToolVersion.VS201\d{1,3}", '$(agent_buildTools)' | Set-Content $(build_cake)
+      (Get-Content $(build_cake)) -replace "MSBuildToolVersion.VS201\d{1,3}", '$(agent_buildTools)' | Set-Content $(build_cake)
       move $(license_file.secureFilePath) ./src/ -Force
-
-
 
 - task: gulp@1
   displayName: Gulp code generation
@@ -77,15 +75,17 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      ./src/node_modules/.bin/copyfiles.cmd -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
-      ./src/node_modules/.bin/cross-env NODE_ENV=production webpack
-      ./src/tools/nuget.exe restore ./src/HCA.sln
+      $env:path="$env:path;$(Pipeline.Workspace)/s/src/node_modules/.bin"
+      $env:path="$env:path;$(Pipeline.Workspace)/s/src/tools"
+      copyfiles -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
+      cross-env NODE_ENV=production webpack
+      nuget.exe restore ./src/HCA.sln
 
 - task: MSBuild@1
   displayName: MSBuild
   inputs:
     solution: './src/HCA.sln'
-    msbuildVersion: '16.0'
+    msbuildVersion: '15.0'
     configuration: 'Debug'
     msbuildArguments: '/t:Rebuild'
 

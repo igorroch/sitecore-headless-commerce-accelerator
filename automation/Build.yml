@@ -73,10 +73,9 @@ steps:
     script: |
       $env:path="$env:path;$(Pipeline.Workspace)/s/src/node_modules/.bin"
       $env:path="$env:path;$(Pipeline.Workspace)/s/src/tools"
-      cd ./src/
-      copyfiles -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
+      copyfiles -f  ./Project/HCA/client/public/**/* ./Project/HCA/client/build/
       cross-env NODE_ENV=production webpack
-      nuget.exe restore ./src/HCA.sln
+      nuget.exe restore ./HCA.sln
     workingDirectory: './src/'
 
 - task: MSBuild@1

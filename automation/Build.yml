@@ -129,10 +129,10 @@ steps:
     publishLocation: 'pipeline'
     
 - task: PublishPipelineArtifact@1
-  displayName: Publish Features 
+  displayName: Publish Feature 
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/Features'
-    artifact: 'Features'
+    targetPath: '$(Pipeline.Workspace)/s/output/Feature'
+    artifact: 'Feature'
     publishLocation: 'pipeline'
     
 - task: PublishPipelineArtifact@1

@@ -1,6 +1,6 @@
 $ArtifactName = $args[0]
-$ArtifactSource = Join-Path $(Pipeline.Workspace) s/src/$ArtifactName
-$ArtifactDestination = Join-Path $(Pipeline.Workspace) s/output
+$ArtifactSource = Join-Path $env:Pipeline.Workspace s/src/$ArtifactName
+$ArtifactDestination = Join-Path $env:Pipeline.Workspace s/output
 $ArtifactDestinationLayer = Join-Path $ArtifactDestination $ArtifactName
 $SubFoldersList = dir $ArtifactSource | Where-Object {$_.PSIsContainer} | ForEach-Object -Process {$_.FullName}
 

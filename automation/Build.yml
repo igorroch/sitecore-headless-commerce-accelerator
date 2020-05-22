@@ -71,11 +71,11 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $env:path="$env:path;$(Pipeline.Workspace)/s/src/node_modules/.bin"
-      $env:path="$env:path;$(Pipeline.Workspace)/s/src/tools"
-      copyfiles -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
-      cross-env NODE_ENV=production webpack
-      nuget.exe restore ./src/HCA.sln
+      # $env:path="$env:path;$(Pipeline.Workspace)/s/src/node_modules/.bin"
+      # $env:path="$env:path;$(Pipeline.Workspace)/s/src/tools"
+      $(Pipeline.Workspace)/s/src/node_modules/.bin/copyfiles.cmd -f  ./src/Project/HCA/client/public/**/* ./src/Project/HCA/client/build/
+      $(Pipeline.Workspace)/s/src/node_modules/.bin/cross-env.cmd NODE_ENV=production $(Pipeline.Workspace)/s/src/node_modules/.bin/webpack.cmd
+      $(Pipeline.Workspace)/s/src/tools/nuget.exe restore ./src/HCA.sln
 
 - task: MSBuild@1
   displayName: MSBuild

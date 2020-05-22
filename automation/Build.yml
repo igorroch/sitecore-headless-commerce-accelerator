@@ -117,7 +117,7 @@ steps:
     publishLocation: 'pipeline'
  
  
- - task: PublishPipelineArtifact@1
+- task: PublishPipelineArtifact@1
   displayName: Publish unicorn
   inputs:
     targetPath: '$(Pipeline.Workspace)/s/output/unicorn'

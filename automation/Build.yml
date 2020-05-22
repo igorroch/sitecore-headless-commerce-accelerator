@@ -109,6 +109,8 @@ steps:
       ./automation/Get-Artifacts.ps1 Feature
       ./automation/Get-Artifacts.ps1 Foundation
       ./automation/Get-Artifacts.ps1 Project
+    errorActionPreference: 'continue'
+    ignoreLASTEXITCODE: true
       
 
 - task: PublishPipelineArtifact@1

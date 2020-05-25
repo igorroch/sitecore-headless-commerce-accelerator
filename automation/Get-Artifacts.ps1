@@ -2,6 +2,8 @@ $ArtifactName = $args[0]
 $ArtifactSource = Join-Path $env:Workspace s/src/$ArtifactName
 $ArtifactDestination = Join-Path $env:Workspace s/output
 $ArtifactDestinationLayer = Join-Path $ArtifactDestination $ArtifactName
+$ToolsSource = Join-Path $env:Workspace s/src/tools
+$UnicornSyncLocation = Join-Path $ToolsSource cake.sitecore/Cake.Sitecore/tools/unicorn
 $SubFoldersList = dir $ArtifactSource | Where-Object {$_.PSIsContainer} | ForEach-Object -Process {$_.FullName}
 
 ForEach ($Folder in $SubFoldersList) {
@@ -15,3 +17,4 @@ ForEach ($Folder in $SubFoldersList) {
 		}
 	}
 robocopy $ArtifactSource $ArtifactDestination/unicorn/$ArtifactName *.yml /s
+robocopy $UnicornSyncLocation $ArtifactDestination/unicorn-sync

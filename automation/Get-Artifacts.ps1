@@ -14,5 +14,4 @@ ForEach ($Folder in $SubFoldersList) {
 		robocopy $DistArtifactSourcePath $ArtifactDestinationLayer/dist /s
 		}
 	}
-if (!(Test-Path $ArtifactDestination/unicorn-sync)) {
 robocopy $ArtifactSource $ArtifactDestination/unicorn/$ArtifactName *.yml /s

@@ -8,6 +8,7 @@ pool:
 
 variables:
   build_cake: './src/build.cake'
+  artifacts_location: '$(Pipeline.Workspace)/s/output'
 
 steps:
 
@@ -112,40 +113,45 @@ steps:
       ./automation/Get-Artifacts.ps1 Project
     errorActionPreference: 'continue'
     ignoreLASTEXITCODE: true
-      
 
 - task: PublishPipelineArtifact@1
   displayName: Publish web config
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/web.config'
+    targetPath: '$(artifacts_location)/web.config'
     artifact: 'web_config'
     publishLocation: 'pipeline'
- 
- 
+
 - task: PublishPipelineArtifact@1
   displayName: Publish unicorn
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/unicorn'
+    targetPath: '$(artifacts_location)/unicorn'
     artifact: 'unicorn'
     publishLocation: 'pipeline'
-    
+
 - task: PublishPipelineArtifact@1
   displayName: Publish Feature 
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/Feature'
+    targetPath: '$(artifacts_location)/Feature'
     artifact: 'Feature'
     publishLocation: 'pipeline'
-    
+
 - task: PublishPipelineArtifact@1
   displayName: Publish Foundation 
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/Foundation'
+    targetPath: '$(artifacts_location)/Foundation'
     artifact: 'Foundation'
     publishLocation: 'pipeline'
-    
+
 - task: PublishPipelineArtifact@1
   displayName: Publish Project 
   inputs:
-    targetPath: '$(Pipeline.Workspace)/s/output/Project'
+    targetPath: '$(artifacts_location)/Project'
     artifact: 'Project'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish unicorn sync tool 
+  inputs:
+    targetPath: '$(artifacts_location)/unicorn-sync'
+    artifact: 'unicorn-sync'
     publishLocation: 'pipeline'

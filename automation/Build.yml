@@ -79,6 +79,12 @@ steps:
       nuget.exe restore ./HCA.sln
     workingDirectory: './src/'
 
+- task: PowerShell@2
+  displayName: MSBuild try
+  inputs:
+    targetType: 'inline'
+    script: 'msbuild ./src/HCA.sln /t:Rebuild /p:Configuration=Debug'
+
 - task: MSBuild@1
   displayName: MSBuild
   inputs:
@@ -99,6 +105,8 @@ steps:
   inputs:
     codeCoverageTool: 'Cobertura'
     summaryFileLocation: '$(Pipeline.Workspace)/s/output/tests/coverage/cobertura-coverage.xml'
+
+
 
 - task: PowerShell@2
   displayName: Collect files for artifacts

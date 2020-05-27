@@ -110,6 +110,14 @@ steps:
     msbuildArguments: '/t:Build /p:Verbosity=Minimal /p:DeployOnBuild=True'
 
 - task: PowerShell@2
+  displayName: Check random folders
+  inputs:
+    targetType: 'inline'
+    script: |
+      Get-ChildItem -Path ./src/Project/HCA/code/obj/Debug/Package/PackageTmp -Recurse
+      Get-ChildItem -Path ./src/Feature/Account/code/obj/Debug/Package/PackageTmp -Recurse
+
+- task: PowerShell@2
   displayName: Collect files for artifacts
   env:
     Workspace: $(Pipeline.Workspace)

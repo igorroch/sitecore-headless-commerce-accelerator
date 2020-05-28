@@ -87,18 +87,18 @@ steps:
     configuration: 'Debug'
     msbuildArguments: '/t:Rebuild'
 
-#- task: PowerShell@2
-#  displayName: Run Unit tests
-#  inputs:
-#    filePath: './src/build.ps1'
-#    arguments: '-Target 003-Tests'
-#    workingDirectory: './src/'
+- task: PowerShell@2
+  displayName: Run Unit tests
+  inputs:
+    filePath: './src/build.ps1'
+    arguments: '-Target 003-Tests'
+    workingDirectory: './src/'
 
-#- task: PublishCodeCoverageResults@1
-#  displayName: Publish code coverage
-#  inputs:
-#    codeCoverageTool: 'Cobertura'
-#    summaryFileLocation: '$(Pipeline.Workspace)/s/output/tests/coverage/cobertura-coverage.xml'
+- task: PublishCodeCoverageResults@1
+  displayName: Publish code coverage
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Pipeline.Workspace)/s/output/tests/coverage/cobertura-coverage.xml'
 
 
 - task: MSBuild@1
@@ -123,6 +123,16 @@ steps:
       ./automation/Get-Artifacts.ps1 Project
     errorActionPreference: 'continue'
     ignoreLASTEXITCODE: true
+
+- task: PowerShell@2
+  displayName: Change default parameters for $(project_name)
+  inputs:
+    targetType: 'inline'
+    script: |
+      (Get-Content $(project_site_config)) -replace 'hostName=$(quotes_regexp)', 'hostName="$(sitecore_hostname)"' | Set-Content $(project_site_config)
+      (Get-Content $(foundation_commerce_config)) -replace '<server>.*</server>', '<server>$(smtp_server)</server>' | Set-Content $(foundation_commerce_config)
+      (Get-Content $(foundation_commerce_config)) -replace '<userName>.*</userName>', '<userName>$(smtp_username)</userName>' | Set-Content $(foundation_commerce_config)
+      (Get-Content $(foundation_commerce_config)) -replace '<password>.*</password>', '<password>$(smtp_password)</password>' | Set-Content $(foundation_commerce_config)
 
 - task: PublishPipelineArtifact@1
   displayName: Publish web config

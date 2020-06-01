@@ -3,35 +3,38 @@ trigger: none
 pool:
   vmImage: 'vs2017-win2016'
 
-steps:
-
-- task: PowerShell@2
-  env:
-    PAT: $(PAT)
-  inputs:
-    targetType: 'inline'
-    script: |
-      $Token = $env:PAT
-      $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
+jobs:
+- job: Define_version
+  steps:
+  - task: PowerShell@2
+    env:
+      PAT: $(PAT)
+    inputs:
+      targetType: 'inline'
+      script: |
+        $Token = $env:PAT
+        $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
       
-      $Headers = @{
-          Authorization = 'Basic {0}' -f $Base64Token;
-          }
+        $Headers = @{
+            Authorization = 'Basic {0}' -f $Base64Token;
+            }
       
       
-      $ReleaseList = (Invoke-RestMethod -Headers $Headers -Uri https://api.github.com/repos/epam/sitecore-headless-commerce-accelerator/branches -Method Get).name | Where-Object { $_.Contains("release")}
-      $LastReleaseNumber = $ReleaseList[-1].Split("/")[1]
-      $MajorVersionNumber = $LastReleaseNumber.Split(".")[0]
-      $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]
-      $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
+        $ReleaseList = (Invoke-RestMethod -Headers $Headers -Uri https://api.github.com/repos/epam/sitecore-headless-commerce-accelerator/branches -Method Get).name | Where-Object { $_.Contains("release")}
+        $LastReleaseNumber = $ReleaseList[-1].Split("/")[1]
+        $MajorVersionNumber = $LastReleaseNumber.Split(".")[0]
+        $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]
+        $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
 
-      Write-Host "##vso[task.setvariable variable=BuildNumber]$LastReleaseNumber-$(branch_revision)"
+        Write-Host "##vso[task.setvariable variable=BuildNumber]$LastReleaseNumber-$(branch_revision)"
+        Write-Host $(BuildNumber)
 
-
-- task: PowerShell@2
+- job: Set_version
   variables:
     RevisionVersionNumber: $[counter(variables['BuildNumber'], 0)]
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "##vso[build.updatebuilnumber]$(BuildNumber).$(RevisionVersionNumber)"
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "##vso[build.updatebuilnumber]$(BuildNumber).$(RevisionVersionNumber)"

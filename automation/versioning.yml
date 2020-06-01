@@ -26,6 +26,5 @@ steps:
       $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
 
       $RevisionVersionNumber = $[counter(variables['LastReleaseNumber'], 0)]
-      $BUildNumber = $LastReleaseNumber-$(branch_revision).$RevisionVersionNumber
       
-      Write-Host "##vso[build.updatebuilnumber]$BuildNumber"
+      Write-Host "##vso[build.updatebuilnumber]$LastReleaseNumber-$(branch_revision).$RevisionVersionNumber"

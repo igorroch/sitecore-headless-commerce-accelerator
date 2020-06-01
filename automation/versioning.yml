@@ -6,10 +6,12 @@ pool:
 steps:
 
 - task: PowerShell@2
+  env:
+    PAT: $(PAT)
   inputs:
     targetType: 'inline'
     script: |
-      $Token = $(PAT)
+      $Token = $env:PAT
       $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
       
       $Headers = @{

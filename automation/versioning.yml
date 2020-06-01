@@ -34,7 +34,7 @@ steps:
         $PreviousRelease -replace "$(branch_revision).*", "$(branch_revision).$NewReleaseNumber" | Set-Content $(version_file)
       }
       else {
-        $BranchVersionNumber = $VersionNumber + "-" + $(branch_revision) + ".1"
+        $BranchVersionNumber = $VersionNumber + "-$(branch_revision).1"
         Set-Content $(version_file) $BranchVersionNumber
       }
 

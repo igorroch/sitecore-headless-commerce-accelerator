@@ -29,9 +29,9 @@ steps:
 
 
 - task: PowerShell@2
+  variables:
+    RevisionVersionNumber: $[counter(variables['BuildNumber'], 0)]
   inputs:
     targetType: 'inline'
     script: |
-      $RevisionVersionNumber = $[counter(variables['BuildNumber'], 0)]
-            
-      Write-Host "##vso[build.updatebuilnumber]$(BuildNumber).$RevisionVersionNumber"
+      Write-Host "##vso[build.updatebuilnumber]$(BuildNumber).$(RevisionVersionNumber)"

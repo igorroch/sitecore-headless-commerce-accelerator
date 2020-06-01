@@ -25,6 +25,6 @@ steps:
       $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]
       $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
 
-      $RevisionVersionNumber = $[counter($(LastReleaseNumber), 0)]
+      $RevisionVersionNumber = $[counter($LastReleaseNumber, 0)]
 
       echo "##vso[build.updatebuilnumber]$LastReleaseNumber-$(branch_revision).$RevisionVersionNumber"

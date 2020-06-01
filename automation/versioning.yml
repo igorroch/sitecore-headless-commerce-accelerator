@@ -40,4 +40,4 @@ steps:
 
       $CurrentRelease = Get-Content $(version_file)
 
-      Write-Host "##vso[build.updatebuilnumber]$CurrentRelease"
+      Write-Host "##vso[build.updatebuildnumber]$CurrentRelease"

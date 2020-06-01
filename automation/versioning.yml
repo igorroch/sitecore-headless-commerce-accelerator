@@ -31,11 +31,11 @@ steps:
 
       if ($VersionNumber -eq $PreviousRelease.Split("-")[0]) {
         $NewReleaseNumber = $PreviousRelease.Split(".")[-1]/1 + 1
-        $PreviousRelease - replace "$(branch_revision).*", "$(branch_revision).$NewReleaseNumber" | Set-Content $(version_file)
+        $PreviousRelease -replace "$(branch_revision).*", "$(branch_revision).$NewReleaseNumber" | Set-Content $(version_file)
       }
       else {
         $BranchVersionNumber = $VersionNumber + "-" + $(branch_revision) + ".1"
-        Set-Content $(version_file) $BranchVersionNumber 
+        Set-Content $(version_file) $BranchVersionNumber
       }
 
       $CurrentRelease = Get-Content $(version_file)

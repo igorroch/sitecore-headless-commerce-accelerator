@@ -25,6 +25,13 @@ steps:
       $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]
       $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
 
-      $RevisionVersionNumber = $[counter($LastReleaseNumber, 0)]
-      
-      Write-Host "##vso[build.updatebuilnumber]$LastReleaseNumber-$(branch_revision).$RevisionVersionNumber"
+      Write-Host "##vso[task.setvariable variable=BuildNumber]$LastReleaseNumber-$(branch_revision)"
+
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $RevisionVersionNumber = $[counter(variables['BuildNumber'], 0)]
+            
+      Write-Host "##vso[build.updatebuilnumber]$(BuildNumber).$RevisionVersionNumber"

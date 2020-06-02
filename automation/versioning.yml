@@ -60,4 +60,4 @@ jobs:
                 }
               }
             }' \
-            $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/$(HCA_Version_Variable_Group_ID)?api-version=5.0-preview.1
+            "$(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/$(HCA_Version_Variable_Group_ID)?api-version=5.0-preview.1"

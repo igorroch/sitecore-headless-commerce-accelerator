@@ -63,6 +63,7 @@ jobs:
             $(System.TeamFoundationCollectionUri)/$(TeamProject)/_apis/distributedtask/variablegroups/$(HCA_Version_Variable_Group_ID)?api-version=5.0-preview.1
 
   - job: Set_build_version
+    dependsOn: Get_build_version
     variables:
       ReleaseVersionNumber: $[counter(variables['HCA_Version'], 1)]
     
@@ -75,6 +76,8 @@ jobs:
           Write-Host "##vso[build.updatebuildnumber]$(HCA_Version).$(ReleaseVersionNumber)"
 
   - job: Test_build_version
+    dependsOn: Set_build_version
+
     steps:
     - task: PowerShell@2
       displayName: 'Test build version'

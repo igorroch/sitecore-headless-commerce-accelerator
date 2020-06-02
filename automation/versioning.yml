@@ -6,38 +6,58 @@ pool:
 variables:
   version_file: './automation/version'
 
-steps:
-- task: PowerShell@2
-  env:
-    PAT: $(PAT)
-  inputs:
-    targetType: 'inline'
-    script: |
-      $Token = $env:PAT
-      $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
+jobs:
+  - job: Set_version
 
-      $Headers = @{
-          Authorization = 'Basic {0}' -f $Base64Token;
+    steps:
+    - task: PowerShell@2
+      displayName: 'Get version variable'
+      env:
+        PAT: $(PAT)
+      inputs:
+        targetType: 'inline'
+        script: |
+          $Token = $env:PAT
+          $Base64Token = [System.Convert]::ToBase64String([char[]]$Token)
+
+          $Headers = @{
+              Authorization = 'Basic {0}' -f $Base64Token;
+              }
+
+          $ReleaseList = (Invoke-RestMethod -Headers $Headers -Uri https://api.github.com/repos/epam/sitecore-headless-commerce-accelerator/branches -Method Get).name | Where-Object { $_.Contains("release")}
+          $LastReleaseNumber = $ReleaseList[-1].Split("/")[1]
+          $MajorVersionNumber = $LastReleaseNumber.Split(".")[0]
+          $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]/1 + 1
+          $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
+          $VersionNumber = $MajorVersionNumber + "." + $MinorVersionNumber + "." + $PatchVersionNumber
+
+          if ($VersionNumber -ne $(HCA_Version).Split("-")[1]) {
+            $BranchVersion = $VersionNumber + "-$(branch_revision)"
           }
+          else {
+            $BranchVersion = $(HCA_Version)
+          }
+          Write-Host "##vso[task.setvariable variable=BranchVersion]$BranchVersion"
 
-      $ReleaseList = (Invoke-RestMethod -Headers $Headers -Uri https://api.github.com/repos/epam/sitecore-headless-commerce-accelerator/branches -Method Get).name | Where-Object { $_.Contains("release")}
-      $LastReleaseNumber = $ReleaseList[-1].Split("/")[1]
-      $MajorVersionNumber = $LastReleaseNumber.Split(".")[0]
-      $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]/1 + 1
-      $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
-      $VersionNumber = $MajorVersionNumber + "." + $MinorVersionNumber + "." + $PatchVersionNumber
-
-      $PreviousRelease = Get-Content $(version_file)
-
-      if ($VersionNumber -eq $PreviousRelease.Split("-")[0]) {
-        $NewReleaseNumber = $PreviousRelease.Split(".")[-1]/1 + 1
-        $PreviousRelease -replace "$(branch_revision).*", "$(branch_revision).$NewReleaseNumber" | Set-Content $(version_file)
-      }
-      else {
-        $BranchVersionNumber = $VersionNumber + "-$(branch_revision).1"
-        Set-Content $(version_file) $BranchVersionNumber
-      }
-
-      $CurrentRelease = Get-Content $(version_file)
-
-      Write-Host "##vso[build.updatebuildnumber]$CurrentRelease"
+    - task: Bash@3
+      displayName: 'Set version variable'
+      inputs:
+        targetType: 'inline'
+        script: |
+          curl -fL -XPUT -H "Authorization:Bearer $(System.AccessToken)" -H "Content-Type:application/json" \
+            -d '{
+              "id": "$(HCA_Version_Variable_Group_ID)",
+              "type": "Vsts",
+              "name": "HCA_Version",
+              "variables": {
+                "HCA_Version_Variable_Group_ID": {
+                "isSecret": false,
+                "value": "$(HCA_Version_Variable_Group_ID)"
+                },
+              "HCA_Version": {
+                "isSecret": false,
+                "value": "$(BranchVersion)"
+                }
+              }
+            }' \
+            $(System.TeamFoundationCollectionUri)/$(System.TeamProject)/_apis/distributedtask/variablegroups/$(HCA_Version_Variable_Group_ID)?api-version=5.0-preview.1

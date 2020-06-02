@@ -115,7 +115,7 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          (Get-Content $(npm_package_config)) -replace '"name": $(quotes_regexp)', '"name": "$(project_name)"' | Set-Content $(npm_package_config)
+          (Get-Content $(npm_package_config)) -replace '"name": $(quotes_regexp)', '"name": "$(package_name)"' | Set-Content $(npm_package_config)
           (Get-Content $(npm_package_config)) -replace '"version": $(quotes_regexp)', '"version": "$(Build.BuildNumber)"' | Set-Content $(npm_package_config)
           
     - task: PowerShell@2
@@ -133,5 +133,5 @@ jobs:
         targetType: 'inline'
         script: |
           "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII
-          npm publish --loglevel=error
+          npm unpublish hca -f
         workingDirectory: '$(npm_package_config_folder)'

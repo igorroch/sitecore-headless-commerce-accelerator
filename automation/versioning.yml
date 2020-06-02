@@ -38,7 +38,6 @@ jobs:
             $BranchVersion = "$(HCA_Version)"
           }
           Write-Host "##vso[task.setvariable variable=BranchVersion]$BranchVersion"
-          Write-Host "$(Build.BuildNumber)"
 
     - task: Bash@3
       displayName: 'Set version variable'
@@ -74,4 +73,13 @@ jobs:
         targetType: 'inline'
         script: |
           Write-Host "##vso[build.updatebuildnumber]$(HCA_Version).$(ReleaseVersionNumber)"
+
+  - job: Test_build_version
+    steps:
+    - task: PowerShell@2
+      displayName: 'Test build version'
+      inputs:
+        targetType: 'inline'
+        script: |
           Write-Host "$(Build.BuildNumber)"
+

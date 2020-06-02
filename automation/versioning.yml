@@ -30,9 +30,9 @@ jobs:
           $MinorVersionNumber = $LastReleaseNumber.Split(".")[1]/1 + 1
           $PatchVersionNumber = $LastReleaseNumber.Split(".")[2]
           $VersionNumber = $MajorVersionNumber + "." + $MinorVersionNumber + "." + $PatchVersionNumber
-
-          if ($VersionNumber -ne ($(HCA_Version)).Split("-")[1]) {
-            $BranchVersion = "($VersionNumber + "-$(branch_revision)")"
+          $LastVersion = "$(HCA_Version)".Split("-")[1]
+          if ($VersionNumber -ne $LastVersion) {
+            $BranchVersion = $VersionNumber + "-$(branch_revision)"
           }
           else {
             $BranchVersion = "$(HCA_Version)"

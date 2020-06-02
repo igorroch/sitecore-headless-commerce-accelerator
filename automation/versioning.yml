@@ -87,3 +87,50 @@ jobs:
         script: |
           Write-Host "$(Build.BuildNumber)"
 
+  - job: Publish_repository
+    dependsOn: Build_and_test
+
+    variables:
+      npm_package_config_folder: './generators/generators/templates/src'
+      npm_package_config: '$(npm_package_config_folder)/package.json'
+
+    steps:
+
+    - task: PowerShell@2
+      displayName: Download node modules
+      inputs:
+        targetType: 'inline'
+        script: 'npm install gulp-cli'
+        workingDirectory: './generators'
+
+    - task: gulp@1
+      displayName: Collect necessary files to templates
+      inputs:
+        gulpFile: './generators/gulpfile.js'
+        targets: 
+        enableCodeCoverage: false
+
+    - task: PowerShell@2
+      displayName: Update package.json
+      inputs:
+        targetType: 'inline'
+        script: |
+          (Get-Content $(npm_package_config)) -replace '"name": $(quotes_regexp)', '"name": "$(project_name)"'  Set-Content $(npm_package_config)
+          (Get-Content $(npm_package_config)) -replace '"version": $(quotes_regexp)', '"version": "$(Build.BuildNumber)"'  Set-Content $(npm_package_config)
+          
+    - task: PowerShell@2
+      displayName: Create package
+      inputs:
+        targetType: 'inline'
+        script: |
+          npm pack $(npm_package_config_folder)
+
+    - task: PowerShell@2
+      displayName: Publish package
+      env:
+        npm_auth_token: $(npm_auth_token)
+      inputs:
+        targetType: 'inline'
+        script: |
+          "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII
+          npm publish --loglevel=error

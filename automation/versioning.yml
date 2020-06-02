@@ -67,8 +67,9 @@ jobs:
       ReleaseVersionNumber: $[counter(variables['HCA_Version'], 1)]
     
     steps:
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            Write-Host "##vso[build.updatebuildnumber]$(HCA_Version).$(ReleaseVersionNumber)"
+    - task: PowerShell@2
+      displayName: 'Set build version'
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Host "##vso[build.updatebuildnumber]$(HCA_Version).$(ReleaseVersionNumber)"

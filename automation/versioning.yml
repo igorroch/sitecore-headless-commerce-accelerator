@@ -115,8 +115,8 @@ jobs:
       inputs:
         targetType: 'inline'
         script: |
-          (Get-Content $(npm_package_config)) -replace '"name": $(quotes_regexp)', '"name": "$(project_name)"'  Set-Content $(npm_package_config)
-          (Get-Content $(npm_package_config)) -replace '"version": $(quotes_regexp)', '"version": "$(Build.BuildNumber)"'  Set-Content $(npm_package_config)
+          (Get-Content $(npm_package_config)) -replace '"name": $(quotes_regexp)', '"name": "$(project_name)"' | Set-Content $(npm_package_config)
+          (Get-Content $(npm_package_config)) -replace '"version": $(quotes_regexp)', '"version": "$(Build.BuildNumber)"' | Set-Content $(npm_package_config)
           
     - task: PowerShell@2
       displayName: Create package

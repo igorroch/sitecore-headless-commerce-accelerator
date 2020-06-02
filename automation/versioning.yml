@@ -122,8 +122,8 @@ jobs:
       displayName: Create package
       inputs:
         targetType: 'inline'
-        script: |
-          npm pack $(npm_package_config_folder)
+        script: 'npm pack'
+        workingDirectory: '$(npm_package_config_folder)'
 
     - task: PowerShell@2
       displayName: Publish package
@@ -134,3 +134,4 @@ jobs:
         script: |
           "//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII
           npm publish --loglevel=error
+        workingDirectory: '$(npm_package_config_folder)'

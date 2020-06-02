@@ -38,6 +38,7 @@ jobs:
             $BranchVersion = "$(HCA_Version)"
           }
           Write-Host "##vso[task.setvariable variable=BranchVersion]$BranchVersion"
+          Write-Host "$env:PAT"
 
     - task: Bash@3
       displayName: 'Set version variable'
